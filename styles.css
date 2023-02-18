@@ -1,0 +1,72 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  background-color: #2196F3;
+  color: #FFFFFF;
+  margin: 0;
+  padding: 20px;
+}
+
+form {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #CCCCCC;
+}
+
+form div {
+  margin: 10px 0;
+}
+
+label {
+  display: inline-block;
+  width: 200px;
+}
+
+input[type="date"],
+input[type="number"] {
+  width: 150px;
+}
+
+button {
+  background-color: #2196F3;
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#result {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #CCCCCC;
+  display: none;
+}
+
+#result h2 {
+  margin: 0;
+}
+
+#result table {
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+#result table th,
+#result table td {
+  border: 1px solid #CCCCCC;
+  padding: 10px;
+  text-align: center;
+}
+
+#result table th {
+  background-color: #EEEEEE;
+}
+
+#result table td.national-holiday {
+  background-color: #FFCDD2;
+}

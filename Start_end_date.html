@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Program Start and End Date Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1>Program Start and End Date Calculator</h1>
+    <form>
+      <div>
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="start-date">
+      </div>
+      <div>
+        <label for="break-weeks">Number of Break Weeks:</label>
+        <input type="number" id="break-weeks" name="break-weeks" min="0">
+      </div>
+      <div>
+        <label for="content-weeks">Number of Content Weeks:</label>
+        <input type="number" id="content-weeks" name="content-weeks" min="1">
+      </div>
+      <div>
+        <button type="button" onclick="calculateDates()">Calculate Dates</button>
+      </div>
+    </form>
+    <div id="result"></div>
+    <script src="action.js"></script>
+  </body>
+</html>
