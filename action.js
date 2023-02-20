@@ -54,26 +54,3 @@ function hasNationalHoliday(startDate, endDate) {
   // replace this with your own logic to check for national holidays
   return false;
 }
-  
-  // display the program schedule in the table
-  const tableBody = document.getElementById('schedule-table-body');
-  tableBody.innerHTML = '';
-  weeks.forEach((week) => {
-    const row = tableBody.insertRow();
-    row.insertCell().textContent = week.weekNumber;
-    row.insertCell().textContent = week.moduleTitle;
-    row.insertCell().textContent = week.startDate;
-    row.insertCell().textContent = week.endDate;
-  });
-  
-  // show the export button
-  const exportButton = document.getElementById('export-button');
-  exportButton.classList.remove('d-none');
-  exportButton.addEventListener('click', () => {
-    exportToExcel(weeks);
-  });
-}
-
-// add event listener for the generate button
-const generateButton = document.getElementById('generate-button');
-generateButton.addEventListener('click', generateSchedule);
