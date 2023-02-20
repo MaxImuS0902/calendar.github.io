@@ -7,82 +7,54 @@ function calculateDates() {
   const startDate = startDateInput.value;
   const breakWeeks = parseInt(breakWeeksInput.value, 10);
   const contentWeeks = parseInt(contentWeeksInput.value, 10);
-  
-  // calculate start and end dates for each week
+
+ // calculate start and end dates for each week
   const totalWeeks = breakWeeks + contentWeeks;
-  const remainingDays = (totalWeeks * 7) - (breakWeeks * 7);
   
   const weeks = [];
   let currentDate = new Date(startDate);
   
   for (let i = 1; i <= totalWeeks; i++) {
     const weekStartDate = new Date(currentDate);
-    const weekEndDate = new Date(currentDate);
-    weekEndDate.setDate(currentDate.getDate() + 6);
+    const weekEndDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000));
+    weeks.push({ start: weekStartDate, end: weekEndDate });
     
-    const week = {
-      weekNumber: i,
-      startDate: weekStartDate.toISOString().substring(0, 10),
-      endDate: weekEndDate.toISOString().substring(0, 10),
-      nationalHolidays: []
-    };
-    
-    weeks.push(week);
-    currentDate.setDate(currentDate.getDate() + 7);
+    currentDate = new Date(weekEndDate.getTime() );
   }
-  
-  // check for national holidays
-  const nationalHolidays = [
-    { date: '2023-01-01', name: "New Year's Day" },
-    { date: '2023-01-17', name: 'Martin Luther King Jr. Day' },
-    { date: '2023-02-20', name: "Washington's Birthday" },
-    { date: '2023-05-29', name: 'Memorial Day' },
-    { date: '2023-07-04', name: 'Independence Day' },
-    { date: '2023-09-04', name: 'Labor Day' },
-    { date: '2023-10-09', name: 'Columbus Day' },
-    { date: '2023-11-10', name: 'Veterans Day' },
-    { date: '2023-11-23', name: 'Thanksgiving Day' },
-    { date: '2023-12-25', name: 'Christmas Day' }
-  ];
-  
-  weeks.forEach((week) => {
-for (let i = 1; i <= totalWeeks; i++) {
-  const weekStartDate = new Date(currentDate);
-  const weekEndDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000));
-  
-  const week = {
-    weekNumber: i,
-    startDate: weekStartDate.toISOString().substring(0, 10),
-    endDate: weekEndDate.toISOString().substring(0, 10),
-    nationalHolidays: []
-  };
-  
-  weeks.push(week);
-  currentDate.setDate(currentDate.getDate() + 7);
-}
-  
-  // display results
+ 	
+  // display result
   const resultDiv = document.getElementById('result');
-  const resultTable = document.getElementById('result-table');
+  resultDiv.innerHTML = '';
   
-  if (resultTable) {
-    resultTable.remove();
+  const resultTable = document.createElement('table');
+  const resultTableHeaderRow = document.createElement('tr');
+  resultTableHeaderRow.innerHTML = '<th>Week</th><th>Start Date</th><th>End Date</th>';
+  resultTable.appendChild(resultTableHeaderRow);
+  
+  for (let i = 0; i < weeks.length; i++) {
+    const weekNumber = i + 0;
+    const weekStartDate = weeks[i].start;
+    const weekEndDate = weeks[i].end;
+    
+    const resultTableRow = document.createElement('tr');
+    resultTableRow.innerHTML = `<td>${weekNumber}</td><td>${weekStartDate.toLocaleDateString()}</td><td>${weekEndDate.toLocaleDateString()}</td>`;
+    
+    if (hasNationalHoliday(weekStartDate, weekEndDate)) {
+      resultTableRow.classList.add('national-holiday');
+    }
+    
+    resultTable.appendChild(resultTableRow);
   }
   
+  resultDiv.appendChild(resultTable);
   resultDiv.style.display = 'block';
-  
-  const table = document.createElement('table');
-  table.setAttribute('id', 'result-table');
-  
-  const tableHeader = document.createElement('thead');
-  const tableHeaderRow = document.createElement('tr');
-  
-  const tableHeaderWeekNumber = document.createElement('th');
-  tableHeaderWeekNumber.textContent = 'Week #';
-  tableHeaderRow.appendChild(tableHeaderWeekNumber);
-  
-  const tableHeaderStartDate = document.createElement('th');
-  tableHeaderStartDate.textContent = '  
+}
+
+function hasNationalHoliday(startDate, endDate) {
+  // replace this with your own logic to check for national holidays
+  return false;
+}
+ 
 
 // function to generate and download an Excel file
 function exportToExcel(data) {
