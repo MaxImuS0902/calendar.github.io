@@ -1,56 +1,88 @@
-function calculateDates() {
-  // get input values
-  const startDateInput = document.getElementById('start-date');
-  const breakWeeksInput = document.getElementById('break-weeks');
-  const contentWeeksInput = document.getElementById('content-weeks');
+// function to generate and download an Excel file
+function exportToExcel(data) {
+  // create a new Excel workbook
+  const workbook = XLSX.utils.book_new();
   
-  const startDate = startDateInput.value;
-  const breakWeeks = parseInt(breakWeeksInput.value, 10);
-  const contentWeeks = parseInt(contentWeeksInput.value, 10);
+  // convert the data to an Excel worksheet
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  
+  // add the worksheet to the workbook
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Program Schedule');
+  
+  // generate a file name based on the current date and time
+  const fileName = `program_schedule_${new Date().toISOString()}.xlsx`;
+  
+  // write the workbook to a binary string
+  const fileContent = XLSX.write(workbook, { type: 'binary', bookType: 'xlsx' });
+  
+  // create a blob from the binary string
+  const blob = new Blob([s2ab(fileContent)], { type: 'application/octet-stream' });
+  
+  // create a download link and click it
+  const downloadLink = document.createElement('a');
+  downloadLink.href = URL.createObjectURL(blob);
+  downloadLink.download = fileName;
+  downloadLink.click();
+}
 
- // calculate start and end dates for each week
-  const totalWeeks = breakWeeks + contentWeeks;
+// function to convert a string to an ArrayBuffer
+function s2ab(s) {
+  const buf = new ArrayBuffer(s.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i < s.length; i++) {
+    view[i] = s.charCodeAt(i) & 0xFF;
+  }
+  return buf;
+}
+
+// function to generate the program schedule
+function generateSchedule() {
+  const startDate = document.getElementById('start-date').value;
+  const totalWeeks = parseInt(document.getElementById('total-weeks').value);
+  const moduleTitles = document.getElementById('module-titles').value.split('\n');
   
+  // create an empty array to store the weeks
   const weeks = [];
-  let currentDate = new Date(startDate);
   
+  // create a new Date object for the start date
+  const currentDate = new Date(startDate);
+  
+  // generate the schedule for each week
   for (let i = 1; i <= totalWeeks; i++) {
     const weekStartDate = new Date(currentDate);
     const weekEndDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000));
-    weeks.push({ start: weekStartDate, end: weekEndDate });
     
-    currentDate = new Date(weekEndDate.getTime() );
-  }
- 	
-  // display result
-  const resultDiv = document.getElementById('result');
-  resultDiv.innerHTML = '';
-  
-  const resultTable = document.createElement('table');
-  const resultTableHeaderRow = document.createElement('tr');
-  resultTableHeaderRow.innerHTML = '<th>Week</th><th>Start Date</th><th>End Date</th>';
-  resultTable.appendChild(resultTableHeaderRow);
-  
-  for (let i = 0; i < weeks.length; i++) {
-    const weekNumber = i + 0;
-    const weekStartDate = weeks[i].start;
-    const weekEndDate = weeks[i].end;
+    const week = {
+      weekNumber: i,
+      startDate: weekStartDate.toISOString().substring(0, 10),
+      endDate: weekEndDate.toISOString().substring(0, 10),
+      moduleTitle: moduleTitles[i - 1] || '',
+      nationalHolidays: []
+    };
     
-    const resultTableRow = document.createElement('tr');
-    resultTableRow.innerHTML = `<td>${weekNumber}</td><td>${weekStartDate.toLocaleDateString()}</td><td>${weekEndDate.toLocaleDateString()}</td>`;
-    
-    if (hasNationalHoliday(weekStartDate, weekEndDate)) {
-      resultTableRow.classList.add('national-holiday');
-    }
-    
-    resultTable.appendChild(resultTableRow);
+    weeks.push(week);
+    currentDate.setDate(currentDate.getDate() + 7);
   }
   
-  resultDiv.appendChild(resultTable);
-  resultDiv.style.display = 'block';
+  // display the program schedule in the table
+  const tableBody = document.getElementById('schedule-table-body');
+  tableBody.innerHTML = '';
+  weeks.forEach((week) => {
+    const row = tableBody.insertRow();
+    row.insertCell().textContent = week.weekNumber;
+    row.insertCell().textContent = week.moduleTitle;
+    row.insertCell().textContent = week.startDate;
+    row.insertCell().textContent = week.endDate;
+  });
+  
+  // show the export button
+  const exportButton = document.getElementById('export-button');
+  exportButton.classList.remove('d-none');
+  exportButton.addEventListener('click', () => {
+    exportToExcel(weeks);
+  });
 }
 
-function hasNationalHoliday(startDate, endDate) {
-  // replace this with your own logic to check for national holidays
-  return false;
-}
+// add event listener for the generate button
+const generateButton = document.getElementById('generate-button');
+generateButton.addEventListener('click', generateSchedule);
