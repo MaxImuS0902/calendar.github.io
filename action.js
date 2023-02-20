@@ -1,3 +1,89 @@
+function calculateDates() {
+  // get input values
+  const startDateInput = document.getElementById('start-date');
+  const breakWeeksInput = document.getElementById('break-weeks');
+  const contentWeeksInput = document.getElementById('content-weeks');
+  
+  const startDate = startDateInput.value;
+  const breakWeeks = parseInt(breakWeeksInput.value, 10);
+  const contentWeeks = parseInt(contentWeeksInput.value, 10);
+  
+  // calculate start and end dates for each week
+  const totalWeeks = breakWeeks + contentWeeks;
+  const remainingDays = (totalWeeks * 7) - (breakWeeks * 7);
+  
+  const weeks = [];
+  let currentDate = new Date(startDate);
+  
+  for (let i = 1; i <= totalWeeks; i++) {
+    const weekStartDate = new Date(currentDate);
+    const weekEndDate = new Date(currentDate);
+    weekEndDate.setDate(currentDate.getDate() + 6);
+    
+    const week = {
+      weekNumber: i,
+      startDate: weekStartDate.toISOString().substring(0, 10),
+      endDate: weekEndDate.toISOString().substring(0, 10),
+      nationalHolidays: []
+    };
+    
+    weeks.push(week);
+    currentDate.setDate(currentDate.getDate() + 7);
+  }
+  
+  // check for national holidays
+  const nationalHolidays = [
+    { date: '2023-01-01', name: "New Year's Day" },
+    { date: '2023-01-17', name: 'Martin Luther King Jr. Day' },
+    { date: '2023-02-20', name: "Washington's Birthday" },
+    { date: '2023-05-29', name: 'Memorial Day' },
+    { date: '2023-07-04', name: 'Independence Day' },
+    { date: '2023-09-04', name: 'Labor Day' },
+    { date: '2023-10-09', name: 'Columbus Day' },
+    { date: '2023-11-10', name: 'Veterans Day' },
+    { date: '2023-11-23', name: 'Thanksgiving Day' },
+    { date: '2023-12-25', name: 'Christmas Day' }
+  ];
+  
+  weeks.forEach((week) => {
+for (let i = 1; i <= totalWeeks; i++) {
+  const weekStartDate = new Date(currentDate);
+  const weekEndDate = new Date(currentDate.getTime() + (7 * 24 * 60 * 60 * 1000));
+  
+  const week = {
+    weekNumber: i,
+    startDate: weekStartDate.toISOString().substring(0, 10),
+    endDate: weekEndDate.toISOString().substring(0, 10),
+    nationalHolidays: []
+  };
+  
+  weeks.push(week);
+  currentDate.setDate(currentDate.getDate() + 7);
+}
+  
+  // display results
+  const resultDiv = document.getElementById('result');
+  const resultTable = document.getElementById('result-table');
+  
+  if (resultTable) {
+    resultTable.remove();
+  }
+  
+  resultDiv.style.display = 'block';
+  
+  const table = document.createElement('table');
+  table.setAttribute('id', 'result-table');
+  
+  const tableHeader = document.createElement('thead');
+  const tableHeaderRow = document.createElement('tr');
+  
+  const tableHeaderWeekNumber = document.createElement('th');
+  tableHeaderWeekNumber.textContent = 'Week #';
+  tableHeaderRow.appendChild(tableHeaderWeekNumber);
+  
+  const tableHeaderStartDate = document.createElement('th');
+  tableHeaderStartDate.textContent = '  
+
 // function to generate and download an Excel file
 function exportToExcel(data) {
   // create a new Excel workbook
